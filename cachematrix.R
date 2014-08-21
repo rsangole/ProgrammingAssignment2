@@ -15,22 +15,21 @@
 # getinv: Retrieves the inverse matrix stored in invr
 
 makeCacheMatrix <- function(mat = matrix()) {
-  invr <- NULL
+  invr <- NULL #invr set to NULL every first time makeCacheMatrix is run
   set <- function(y){
-    mat <<- y
-    invr <<- NULL
-    print(invr)
+    mat <<- y #Sets 'mat' in makeCacheMatrix func's environment to y
+    invr <<- NULL #Sets 'invr' in makeCacheMatrix func's envir to NULL, since a new matrix is assigned to mat
   }
   get <- function(){
     mat
   }
   setinv <- function(inv){
-    invr <<- inv
+    invr <<- inv #sets 'invr' in makeCacheMatrix func's envir to the inverse obtained thru argument 'inv' 
   }
   getinv <- function(){
     invr 
   }
-  list(set = set, get = get,
+  list(set = set, get = get, #function list
        setinv = setinv,
        getinv = getinv)
 }
@@ -42,13 +41,14 @@ makeCacheMatrix <- function(mat = matrix()) {
 # Inverse is calculated using solve() and gets stored in the makeCacheMatrix environment
 # using setinv()
 cacheSolve <- function(x, ...) {
-  inverse <- x$getinv()
-  if(!is.null(inverse)) {
+  inverse <- x$getinv() #get existing inverse, possibly NULL
+  if(!is.null(inverse)) { #if NOT NULL, run this...
     message("Getting cached inverse. Not recalculating.")
-    return(inverse)
+    return(inverse) #return exits the function completely
   }
-  mat <- x$get()
-  inverse <- solve(mat, ...)
-  x$setinv(inverse)
-  inverse
+  #if NULL, run this...
+  mat <- x$get() #get the matrix
+  inverse <- solve(mat, ...) #calculate the inverse
+  x$setinv(inverse) #store in makeCacheMatrix func's environment
+  inverse #return inverse
 }
